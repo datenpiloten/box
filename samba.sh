@@ -7,8 +7,8 @@ set -x
 read -p "Enter the Samba username (default: sambauser): " SMB_USER
 SMB_USER=${SMB_USER:-sambauser}
 
-read -p "Enter the share name (default: box): " SHARE_NAME
-SHARE_NAME=${SHARE_NAME:-box}
+read -p "Enter the share name (default: datenpiloten_box): " SHARE_NAME
+SHARE_NAME=${SHARE_NAME:-datenpiloten_box}
 
 read -p "Enter the share path (default: /srv/samba/$SHARE_NAME): " SHARE_PATH
 SHARE_PATH=${SHARE_PATH:-/srv/samba/$SHARE_NAME}
