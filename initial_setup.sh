@@ -53,3 +53,4 @@ if curl -sSL https://get.docker.com | sh; then
         sudo usermod -aG docker $(whoami)
 else
 	echo "Docker installation failed."
+fi
