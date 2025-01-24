@@ -31,20 +31,40 @@ sudo ufw allow 22
 
 # DEACTIVATING SSH PASSWORD LOGIN
 
+#!/bin/bash
+
+# Backup existing SSH configuration files
+echo "Backing up SSH configuration files..."
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+sudo cp /etc/ssh/sshd_config.d/50-cloud-init.conf /etc/ssh/sshd_config.d/50-cloud-init.conf.bak 2>/dev/null
+
+# Update the main sshd_config file
+echo "Updating /etc/ssh/sshd_config..."
 sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 sudo sed -i 's/^PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-sudo sed -i 's/^#ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
-sudo sed -i 's/^ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
-sudo systemctl reload sshd
 
-if systemctl is-active --quiet sshd; then
-  echo "SSH service reloaded successfully. Password authentication is disabled."
+# Update the cloud-init SSH configuration override
+CLOUD_INIT_CONF="/etc/ssh/sshd_config.d/50-cloud-init.conf"
+if [ -f "$CLOUD_INIT_CONF" ]; then
+    echo "Updating $CLOUD_INIT_CONF..."
+    sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' "$CLOUD_INIT_CONF"
+    sudo sed -i 's/^PasswordAuthentication yes/PasswordAuthentication no/' "$CLOUD_INIT_CONF"
 else
-  echo "Failed to reload SSH service! Restoring the backup configuration."
-  sudo mv /etc/ssh/sshd_config.bak /etc/ssh/sshd_config
-  sudo systemctl reload sshd
+    echo "Creating $CLOUD_INIT_CONF to disable password authentication..."
+    echo "PasswordAuthentication no" | sudo tee "$CLOUD_INIT_CONF" > /dev/null
 fi
+
+# Restart the SSH service to apply changes
+echo "Restarting SSH service..."
+sudo systemctl restart ssh
+
+# Confirm changes
+echo "Verifying configuration..."
+sudo sshd -T | grep -i passwordauthentication
+
+echo "Password authentication has been disabled. Ensure key-based authentication is set up to avoid being locked out."
+
+
 
 # DOCKER
 echo "Installing docker..."
