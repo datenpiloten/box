@@ -15,9 +15,6 @@ ssh-import-id-gh datenpiloten
 
 # UFW CONFIG
 
-echo "Activating UFW (firewall)"
-sudo ufw enable
-
 echo "Allowing ports..."
 
 echo "Allowing wireguard connection port..."
@@ -27,7 +24,10 @@ echo "Allowing zabbix agent port..."
 sudo ufw allow 10050
 
 echo "Allowing ssh port..."
-sudo ufw allow 22
+sudo ufw allow ssh
+
+echo "Activating UFW (firewall)"
+sudo ufw enable
 
 # DEACTIVATING SSH PASSWORD LOGIN
 
