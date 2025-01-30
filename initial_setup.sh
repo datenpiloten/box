@@ -23,6 +23,9 @@ sudo ufw allow 51820
 echo "Allowing zabbix agent port..."
 sudo ufw allow 10050
 
+echo "Allowing SMB port..."
+sudo ufw allow 445
+
 echo "Allowing ssh port..."
 sudo ufw allow ssh
 
