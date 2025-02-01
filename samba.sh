@@ -53,6 +53,8 @@ sudo bash -c "cat > /etc/samba/smb.conf" <<EOL
    workgroup = WORKGROUP
    server string = Samba Server
    netbios name = $(hostname)
+   create mask = 0777
+   directory mask = 0777
    security = user
    map to guest = Bad User
    dns proxy = no
